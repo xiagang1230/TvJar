@@ -15,7 +15,6 @@
  */
 package com.github.catvod.utils;
 
-import com.github.catvod.crawler.SpiderDebug;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.MessageDigest;
