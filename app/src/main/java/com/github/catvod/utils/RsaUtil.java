@@ -1,6 +1,6 @@
-package com.opslab.util.encrypt;
+package com.github.catvod.utils;
 
-import com.opslab.Opslab;
+import com.github.catvod.utils;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
