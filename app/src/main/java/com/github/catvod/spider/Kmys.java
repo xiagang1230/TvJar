@@ -214,7 +214,6 @@ public class Kmys extends Spider {
     public String homeVideoContent() {
         try {
             checkDomain();
-            getkey();
             String url = staticDomain + "/static/" + appId + "/index/cloumn/1.json";
             String content = OkHttpUtil.string(url, getHeaders(url));
             JSONObject jsonObject = new JSONObject(content).getJSONObject("data");
