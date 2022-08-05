@@ -9,6 +9,7 @@ import android.util.Base64;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.RSAUtils;
 import com.github.catvod.utils.okhttp.OKCallBack;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
@@ -28,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.Pattern;L
 
 import javax.crypto.Cipher;
 
@@ -426,6 +427,7 @@ public class Kmys extends Spider {
         }
         return src;
     }
+    
     public static void getkey(){
         if (signPlayerStr.isEmpty()){
             ////https://video-api.kumaoys.cn/api/v2/b/83708861
@@ -461,10 +463,10 @@ public class Kmys extends Spider {
                         try {
 
                             JSONObject jsonObject = new JSONObject(response).getJSONObject("data");
-                            String a = new String(Base64.decode(jsonObject.getString("a"), Base64.DEFAULT));
-                            String k = new String(Base64.decode(jsonObject.getString("k"), Base64.DEFAULT));
-                            String z = new String(Base64.decode(jsonObject.getString("z"), Base64.DEFAULT));
-                            String data = decryptByPublicKey(k+z+a);
+                            String a = new String(Base64.decode(jsonObject.getString("a"),Base64.DEFAULT));
+                            String k = new String(Base64.decode(jsonObject.getString("k"),Base64.DEFAULT));
+                            String z = new String(Base64.decode(jsonObject.getString("z"),Base64.DEFAULT));
+                            String data = RSAUtils.decryptByPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCt/dLGQj1Iimj0LIUMUXgBGUjsfrm6o1/pZjXXVLL3py2vLktNtSoJU+69v1tUXZqiU9BqMHApVmMOtOnkL5J+ENdLIX3bXnNtfNJpYX4Iz8OBMqKdDch80gN8rLkTPReFkBGsMAndKpc0iMdgd6nts/gQ3wUBNJKpmOG35UateQIDAQAB",k+z+a);
                             signPlayerStr = new JSONObject(data).optString("key");
                         } catch (JSONException e) {
                         } catch (Exception e) {
@@ -478,30 +480,6 @@ public class Kmys extends Spider {
             }
         }
 
-    }
-
-    public static  String decryptByPublicKey(String in) {
-        try {
-            RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCt/dLGQj1Iimj0LIUMUXgBGUjsfrm6o1/pZjXXVLL3py2vLktNtSoJU+69v1tUXZqiU9BqMHApVmMOtOnkL5J+ENdLIX3bXnNtfNJpYX4Iz8OBMqKdDch80gN8rLkTPReFkBGsMAndKpc0iMdgd6nts/gQ3wUBNJKpmOG35UateQIDAQAB", Base64.DEFAULT)));
-            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding");
-            cipher.init(Cipher.DECRYPT_MODE, pubKey);
-            byte[] inData = Base64.decode(in, Base64.DEFAULT);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            if (inData.length <= 256) {
-                outputStream.write(cipher.doFinal(inData));
-            } else {
-                for (int i = 0; i < inData.length; i += 256) {
-                    outputStream.write(cipher.doFinal(inData, i, 256));
-                }
-            }
-            outputStream.flush();
-            String result = new String(outputStream.toByteArray(), Misc.CharsetUTF8);
-            outputStream.close();
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 
     String rsa(String in) {
