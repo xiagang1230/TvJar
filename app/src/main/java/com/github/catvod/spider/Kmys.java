@@ -45,7 +45,7 @@ public class Kmys extends Spider {
 
     private String appId = "5"; // 飞瓜 1 酷猫 5
 
-    private String device = device;
+    private String device = "f5bef2cbcdc2b1ff38f93043de34229c1657045381104";
 
     @Override
     public void init(Context context) {
@@ -70,7 +70,7 @@ public class Kmys extends Spider {
         headers.put("ed", device);
         headers.put("appId", appId);
         headers.put("platformId", "7");
-        headers.put("User-Agent", system.getProperty("http.agent"));
+        headers.put("User-Agent", "okhttp/3.14.7");
         return headers;
     }
 
@@ -78,7 +78,7 @@ public class Kmys extends Spider {
         if (staticDomain.isEmpty()) {
             String url = "http://feigua2021.oss-cn-beijing.aliyuncs.com/static/config/video/" + appId + ".json";
             HashMap<String, String> headers = new HashMap<>();
-            headers.put("User-Agent", system.getProperty("http.agent"));
+            headers.put("User-Agent", "okhttp/3.14.7");
             headers.put("ed", device);
             String json = OkHttpUtil.string(url, headers);
             try {
@@ -426,10 +426,39 @@ public class Kmys extends Spider {
         }
         return src;
     }
-    
-     @Override
-     public void onResponse(String response) {
-         try {
+    public static void getkey(){
+        if (signPlayerStr.isEmpty()){
+            ////https://video-api.kumaoys.cn/api/v2/b/83708861
+            String url = "https://mtv.stvmts.com/api/v2/b/"+((int) (Math.random() * 100000000));
+            HashMap hashMap = new HashMap();
+            hashMap.put("versionNumber", "360");
+            hashMap.put("versionName", "3.6.0");
+            hashMap.put("device", "f5bef2cbcdc2b1ff38f93043de34229c1657045381104");
+            //hashMap.put("appId", "5");
+            hashMap.put("platformId", "7");
+            hashMap.put("User-Agent", "okhttp/3.14.7");
+            hashMap.put("Pragma", "Pragma:: no-cache");
+            hashMap.put("Cache-Control", "no-cache");
+            hashMap.put("Host", "mtv.stvmts.com");
+            hashMap.put("Content-Type", "application/json; charser=utf-8");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                int random = (int)(Math.random()*1.0E8d);
+                int time = (int)(System.currentTimeMillis()/1000);
+                String signBefore = "p=com.feigua.yingshi&t=" + time + "&r=" + random + "&s=36eff39894f62d333fd3f488cffbf364&pl=1";
+                jsonObject.put("s",Misc.MD5(signBefore,Misc.CharsetUTF8));
+                jsonObject.put("t",time);
+                jsonObject.put("r",random);
+                jsonObject.put("i",5);
+                jsonObject.put("p",1);
+                OkHttpUtil.postJson(OkHttpUtil.defaultClient(), url, jsonObject.toString(), hashMap, new OKCallBack.OKCallBackString() {
+                    @Override
+                    public void onFailure(Call call, Exception e) {
+                    }
+
+                    @Override
+                    public void onResponse(String response) {
+                        try {
 
                             JSONObject jsonObject = new JSONObject(response).getJSONObject("data");
                             String a = new String(Base64.decode(jsonObject.getString("a"), Base64.DEFAULT));
@@ -448,37 +477,8 @@ public class Kmys extends Spider {
                 e.printStackTrace();
             }
         }
-    
-    public static void getkey(){
-        if (signPlayerStr.isEmpty()){
-            ////https://video-api.kumaoys.cn/api/v2/b/83708861
-            String url = "https://mtv.stvmts.com/api/v2/b/"+((int) (Math.random() * 100000000));
-            HashMap hashMap = new HashMap();
-            hashMap.put("versionNumber", "360");
-            hashMap.put("versionName", "3.6.0");
-            hashMap.put("device", device);
-            hashMap.put("appId", appId);
-            hashMap.put("platformId", "7");
-            hashMap.put("User-Agent", system.getProperty("http.agent"));
-            hashMap.put("Pragma:Pragma:", "no-cache");
-            hashMap.put("Cache-Control", "no-cache");
-            hashMap.put("Host", "mtv.stvmts.com");
-            hashMap.put("Content-Type", "application/json; charser=utf-8");
-            JSONObject jsonObject = new JSONObject();
-            try {
-                int random = (int)(Math.random()*1.0E8d);
-                int time = (int)(System.currentTimeMillis()/1000);
-                String signBefore = "p=com.feigya.yingshi&t=" + time + "&r=" + random + "&s=36eff39894f62d333fd3f488cffbf364&pl=1";
-                jsonObject.put("s",Misc.MD5(signBefore,Misc.CharsetUTF8));
-                jsonObject.put("t",time);
-                jsonObject.put("r",random);
-                jsonObject.put("i",5);
-                jsonObject.put("p",1);
-                OkHttpUtil.postJson(OkHttpUtil.defaultClient(), url, jsonObject.toString(), hashMap, new OKCallBack.OKCallBackString() {
-                    @Override
-                    public void onFailure(Call call, Exception e) {
-                    }
-   }
+
+    }
 
     public static  String decryptByPublicKey(String in) {
         try {
@@ -550,7 +550,7 @@ public class Kmys extends Spider {
         Uri uri = Uri.parse(m3u8);
         String time = String.valueOf(System.currentTimeMillis());
         String key = Misc.MD5(subUrl(m3u8) + signPlayerStr + time, Misc.CharsetUTF8).toLowerCase();
-        String realUrl = m3u8 + "?key=" + key + "&v=360&i=5&p=7&ed=device&time=" + time;
+        String realUrl = m3u8 + "?key=" + key + "&v=360&i=5&p=7&ed=f5bef2cbcdc2b1ff38f93043de34229c1657045381104&time=" + time;
         String m3u8Content = OkHttpUtil.string(realUrl, kmysPlayerHeaders);
         String tsUrl = m3u8.substring(0, m3u8.indexOf(uri.getLastPathSegment()));
         StringBuilder sb = new StringBuilder();
@@ -580,7 +580,7 @@ public class Kmys extends Spider {
     static Object[] getKeyContent(String key) {
         String time = String.valueOf(System.currentTimeMillis());
         String md5 = Misc.MD5(subUrl(key) + signPlayerStr + time, Misc.CharsetUTF8).toLowerCase();
-        String realUrl = key + "?key=" + md5 + "&v=360&i=5&p=7&ed=device&time=" + time;
+        String realUrl = key + "?key=" + md5 + "&v=360&i=5&p=7&ed=f5bef2cbcdc2b1ff38f93043de34229c1657045381104&time=" + time;
         String keyContent = OkHttpUtil.string(realUrl, kmysPlayerHeaders);
         String type = "application/octet-stream";
         Object[] result = new Object[3];
@@ -594,7 +594,7 @@ public class Kmys extends Spider {
     static Object[] getTsContent(String ts) {
         String time = String.valueOf(System.currentTimeMillis());
         String key = Misc.MD5(subUrl(ts) + signPlayerStr + time, Misc.CharsetUTF8).toLowerCase();
-        String realUrl = ts + "?key=" + key + "&v=360&i=5&p=7&ed=device&time=" + time;
+        String realUrl = ts + "?key=" + key + "&v=360&i=5&p=7&ed=f5bef2cbcdc2b1ff38f93043de34229c1657045381104&time=" + time;
         OKCallBack.OKCallBackDefault callBack = new OKCallBack.OKCallBackDefault() {
 
 
@@ -629,8 +629,8 @@ public class Kmys extends Spider {
         url = new String(Base64.decode(url, Base64.DEFAULT | Base64.URL_SAFE | Base64.NO_WRAP), Misc.CharsetUTF8);
         if (kmysPlayerHeaders == null) {
             kmysPlayerHeaders = new HashMap<>();
-            kmysPlayerHeaders.put("User-Agent", system.getProperty("http.agent"));
-            kmysPlayerHeaders.put("ed", device);
+            kmysPlayerHeaders.put("User-Agent", "okhttp/3.14.7");
+            kmysPlayerHeaders.put("ed", "f5bef2cbcdc2b1ff38f93043de34229c1657045381104");
             kmysPlayerHeaders.put("Connection", "close");
         }
         if (type.equals("m3u8")) {
