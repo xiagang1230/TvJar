@@ -504,35 +504,35 @@ public class Kmys extends Spider {
         return "";
     }
 
-    String rsa(String in) {
-        try {
-            RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3VLHgbkFN0ebMaR4e0D\n" +
-                    "z6Z2mFexPBFKGqK0tuRhzu7XOrG92nKWfnublf2p1i22UN81whBLINjMttOuqW6\n" +
-                    "fM9DCnAPTelud1zCXWYWIsv5Z19inJSG8vytJ7xg1dnfuRSRUkx11IE7bm0T/sM\n" +
-                    "0sI4GgcktQJNSizyirHtuJjUUxxQabEhFkFeqQ5r+A69KjB5QkotCc4pG5lENyT\n" +
-                    "ARHGSsfaiJthaiH0yJ/8tUlyMgJ9H6/jbQg0wlLcEUzdfe2KuCPrTRzIzx4Cjm1\n" +
-                    "JogT6JV2byvXpzAMC3O48LDiekJdVztg2Cj7E0cGrOsGs+IK6F7TWsKD/cIELTF\n" +
-                    "hLz6dExQIDAQAB", Base64.DEFAULT)));
-            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding");
-            cipher.init(Cipher.DECRYPT_MODE, pubKey);
-            byte[] inData = Base64.decode(in, Base64.DEFAULT);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            if (inData.length <= 256) {
-                outputStream.write(cipher.doFinal(inData));
-            } else {
-                for (int i = 0; i < inData.length; i += 256) {
-                    outputStream.write(cipher.doFinal(inData, i, 256));
-                }
-            }
-            outputStream.flush();
-            String result = new String(outputStream.toByteArray(), Misc.CharsetUTF8);
-            outputStream.close();
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
+  //  String rsa(String in) {
+  //      try {
+   //         RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3VLHgbkFN0ebMaR4e0D\n" +
+                    //"z6Z2mFexPBFKGqK0tuRhzu7XOrG92nKWfnublf2p1i22UN81whBLINjMttOuqW6\n" +
+                    //"fM9DCnAPTelud1zCXWYWIsv5Z19inJSG8vytJ7xg1dnfuRSRUkx11IE7bm0T/sM\n" +
+                    //"0sI4GgcktQJNSizyirHtuJjUUxxQabEhFkFeqQ5r+A69KjB5QkotCc4pG5lENyT\n" +
+                    //"ARHGSsfaiJthaiH0yJ/8tUlyMgJ9H6/jbQg0wlLcEUzdfe2KuCPrTRzIzx4Cjm1\n" +
+                    //"JogT6JV2byvXpzAMC3O48LDiekJdVztg2Cj7E0cGrOsGs+IK6F7TWsKD/cIELTF\n" +
+   //                 "hLz6dExQIDAQAB", Base64.DEFAULT)));
+  //          Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding");
+  //          cipher.init(Cipher.DECRYPT_MODE, pubKey);
+  //          byte[] inData = Base64.decode(in, Base64.DEFAULT);
+   //         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+   //         if (inData.length <= 256) {
+  //              outputStream.write(cipher.doFinal(inData));
+  //          } else {
+   //             for (int i = 0; i < inData.length; i += 256) {
+  //                  outputStream.write(cipher.doFinal(inData, i, 256));
+   //             }
+    //        }
+   //         outputStream.flush();
+   //         String result = new String(outputStream.toByteArray(), Misc.CharsetUTF8);
+   //         outputStream.close();
+    //        return result;
+   //     } catch (Exception e) {
+  //          e.printStackTrace();
+   //     }
+   //     return "";
+ //   }
 
     private static HashMap<String, String> kmysPlayerHeaders = null;
     private static String signPlayerStr = "";
