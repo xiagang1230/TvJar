@@ -45,7 +45,7 @@ public class Kmys extends Spider {
 
     private String appId = "5"; // 飞瓜 1 酷猫 5
 
-    private String device = "f5bef2cbcdc2b1ff38f93043de34229c1657045381104";
+    private String device = "b46c71e9bc6dd44ee16eac6c7694aac51659983165265";
 
     @Override
     public void init(Context context) {
@@ -95,7 +95,6 @@ public class Kmys extends Spider {
     public String homeContent(boolean filter) {
         try {
             checkDomain();
-            getkey();
             String url = staticDomain + "/static/" + appId + "/config/lib-new.json";
             String content = OkHttpUtil.string(url, getHeaders(url));
             JSONObject jsonObject = new JSONObject(content).getJSONObject("data");
@@ -426,63 +425,16 @@ public class Kmys extends Spider {
         }
         return src;
     }
-    public static void getkey(){
-        if (signPlayerStr.isEmpty()){
-            ////https://video-api.kumaoys.cn/api/v2/b/83708861
-            String url = "https://mtv.stvmts.com/api/v2/b/"+((int) (Math.random() * 100000000));
-            HashMap hashMap = new HashMap();
-            hashMap.put("versionNumber", "360");
-            hashMap.put("versionName", "3.6.0");
-            hashMap.put("device", "f5bef2cbcdc2b1ff38f93043de34229c1657045381104");
-            //hashMap.put("appId", "5");
-            hashMap.put("platformId", "7");
-            hashMap.put("User-Agent", "okhttp/3.14.7");
-            hashMap.put("Pragma", "Pragma:: no-cache");
-            hashMap.put("Cache-Control", "no-cache");
-            hashMap.put("Host", "mtv.stvmts.com");
-            hashMap.put("Content-Type", "application/json; charser=utf-8");
-            JSONObject jsonObject = new JSONObject();
-            try {
-                int random = (int)(Math.random()*1.0E8d);
-                int time = (int)(System.currentTimeMillis()/1000);
-                String signBefore = "p=com.feigua.yingshi&t=" + time + "&r=" + random + "&s=36eff39894f62d333fd3f488cffbf364&pl=1";
-                jsonObject.put("s",Misc.MD5(signBefore,Misc.CharsetUTF8));
-                jsonObject.put("t",time);
-                jsonObject.put("r",random);
-                jsonObject.put("i",5);
-                jsonObject.put("p",1);
-                OkHttpUtil.postJson(OkHttpUtil.defaultClient(), url, jsonObject.toString(), hashMap, new OKCallBack.OKCallBackString() {
-                    @Override
-                    public void onFailure(Call call, Exception e) {
-                    }
 
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-
-                            JSONObject jsonObject = new JSONObject(response).getJSONObject("data");
-                            String a = new String(Base64.decode(jsonObject.getString("a"), Base64.DEFAULT));
-                            String k = new String(Base64.decode(jsonObject.getString("k"), Base64.DEFAULT));
-                            String z = new String(Base64.decode(jsonObject.getString("z"), Base64.DEFAULT));
-                            String data = decryptByPublicKey(k+z+a);
-                            signPlayerStr = new JSONObject(data).optString("key");
-                        } catch (JSONException e) {
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    public static  String decryptByPublicKey(String in) {
+    String rsa(String in) {
         try {
-            RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCt/dLGQj1Iimj0LIUMUXgBGUjsfrm6o1/pZjXXVLL3py2vLktNtSoJU+69v1tUXZqiU9BqMHApVmMOtOnkL5J+ENdLIX3bXnNtfNJpYX4Iz8OBMqKdDch80gN8rLkTPReFkBGsMAndKpc0iMdgd6nts/gQ3wUBNJKpmOG35UateQIDAQAB", Base64.DEFAULT)));
+            RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3VLHgbkFN0ebMaR4e0D\n" +
+                    "z6Z2mFexPBFKGqK0tuRhzu7XOrG92nKWfnublf2p1i22UN81whBLINjMttOuqW6\n" +
+                    "fM9DCnAPTelud1zCXWYWIsv5Z19inJSG8vytJ7xg1dnfuRSRUkx11IE7bm0T/sM\n" +
+                    "0sI4GgcktQJNSizyirHtuJjUUxxQabEhFkFeqQ5r+A69KjB5QkotCc4pG5lENyT\n" +
+                    "ARHGSsfaiJthaiH0yJ/8tUlyMgJ9H6/jbQg0wlLcEUzdfe2KuCPrTRzIzx4Cjm1\n" +
+                    "JogT6JV2byvXpzAMC3O48LDiekJdVztg2Cj7E0cGrOsGs+IK6F7TWsKD/cIELTF\n" +
+                    "hLz6dExQIDAQAB", Base64.DEFAULT)));
             Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, pubKey);
             byte[] inData = Base64.decode(in, Base64.DEFAULT);
@@ -504,38 +456,8 @@ public class Kmys extends Spider {
         return "";
     }
 
-  //  String rsa(String in) {
-  //      try {
-   //         RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3VLHgbkFN0ebMaR4e0D\n" +
-                    //"z6Z2mFexPBFKGqK0tuRhzu7XOrG92nKWfnublf2p1i22UN81whBLINjMttOuqW6\n" +
-                    //"fM9DCnAPTelud1zCXWYWIsv5Z19inJSG8vytJ7xg1dnfuRSRUkx11IE7bm0T/sM\n" +
-                    //"0sI4GgcktQJNSizyirHtuJjUUxxQabEhFkFeqQ5r+A69KjB5QkotCc4pG5lENyT\n" +
-                    //"ARHGSsfaiJthaiH0yJ/8tUlyMgJ9H6/jbQg0wlLcEUzdfe2KuCPrTRzIzx4Cjm1\n" +
-                    //"JogT6JV2byvXpzAMC3O48LDiekJdVztg2Cj7E0cGrOsGs+IK6F7TWsKD/cIELTF\n" +
-   //                 "hLz6dExQIDAQAB", Base64.DEFAULT)));
-  //          Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding");
-  //          cipher.init(Cipher.DECRYPT_MODE, pubKey);
-  //          byte[] inData = Base64.decode(in, Base64.DEFAULT);
-   //         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-   //         if (inData.length <= 256) {
-  //              outputStream.write(cipher.doFinal(inData));
-  //          } else {
-   //             for (int i = 0; i < inData.length; i += 256) {
-  //                  outputStream.write(cipher.doFinal(inData, i, 256));
-   //             }
-    //        }
-   //         outputStream.flush();
-   //         String result = new String(outputStream.toByteArray(), Misc.CharsetUTF8);
-   //         outputStream.close();
-    //        return result;
-   //     } catch (Exception e) {
-  //          e.printStackTrace();
-   //     }
-   //     return "";
- //   }
-
     private static HashMap<String, String> kmysPlayerHeaders = null;
-    private static String signPlayerStr = "";
+    private static String signPlayerStr = "7801dabe59";
     private static final Pattern tsRex = Pattern.compile("(\\S+.ts)|(#EXT-X-KEY:\\S+\")(\\S+)(\")");
 
     static String subUrl(String url) {
@@ -550,7 +472,7 @@ public class Kmys extends Spider {
         Uri uri = Uri.parse(m3u8);
         String time = String.valueOf(System.currentTimeMillis());
         String key = Misc.MD5(subUrl(m3u8) + signPlayerStr + time, Misc.CharsetUTF8).toLowerCase();
-        String realUrl = m3u8 + "?key=" + key + "&v=360&i=5&p=7&ed=f5bef2cbcdc2b1ff38f93043de34229c1657045381104&time=" + time;
+        String realUrl = m3u8 + "?key=" + key + "&v=360&i=5&p=7&ed=b46c71e9bc6dd44ee16eac6c7694aac51659983165265&time=" + time;
         String m3u8Content = OkHttpUtil.string(realUrl, kmysPlayerHeaders);
         String tsUrl = m3u8.substring(0, m3u8.indexOf(uri.getLastPathSegment()));
         StringBuilder sb = new StringBuilder();
@@ -580,7 +502,7 @@ public class Kmys extends Spider {
     static Object[] getKeyContent(String key) {
         String time = String.valueOf(System.currentTimeMillis());
         String md5 = Misc.MD5(subUrl(key) + signPlayerStr + time, Misc.CharsetUTF8).toLowerCase();
-        String realUrl = key + "?key=" + md5 + "&v=360&i=5&p=7&ed=f5bef2cbcdc2b1ff38f93043de34229c1657045381104&time=" + time;
+        String realUrl = key + "?key=" + md5 + "&v=360&i=5&p=7&ed=b46c71e9bc6dd44ee16eac6c7694aac51659983165265&time=" + time;
         String keyContent = OkHttpUtil.string(realUrl, kmysPlayerHeaders);
         String type = "application/octet-stream";
         Object[] result = new Object[3];
@@ -594,7 +516,7 @@ public class Kmys extends Spider {
     static Object[] getTsContent(String ts) {
         String time = String.valueOf(System.currentTimeMillis());
         String key = Misc.MD5(subUrl(ts) + signPlayerStr + time, Misc.CharsetUTF8).toLowerCase();
-        String realUrl = ts + "?key=" + key + "&v=360&i=5&p=7&ed=f5bef2cbcdc2b1ff38f93043de34229c1657045381104&time=" + time;
+        String realUrl = ts + "?key=" + key + "&v=360&i=5&p=7&ed=b46c71e9bc6dd44ee16eac6c7694aac51659983165265&time=" + time;
         OKCallBack.OKCallBackDefault callBack = new OKCallBack.OKCallBackDefault() {
 
 
@@ -630,7 +552,7 @@ public class Kmys extends Spider {
         if (kmysPlayerHeaders == null) {
             kmysPlayerHeaders = new HashMap<>();
             kmysPlayerHeaders.put("User-Agent", "okhttp/3.14.7");
-            kmysPlayerHeaders.put("ed", "f5bef2cbcdc2b1ff38f93043de34229c1657045381104");
+            kmysPlayerHeaders.put("ed", "b46c71e9bc6dd44ee16eac6c7694aac51659983165265");
             kmysPlayerHeaders.put("Connection", "close");
         }
         if (type.equals("m3u8")) {
@@ -642,6 +564,4 @@ public class Kmys extends Spider {
         }
         return null;
     }
-
-
 }
