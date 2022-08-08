@@ -43,7 +43,7 @@ public class Kmys extends Spider {
     private String apiDomain = "";
     private String staticDomain = "";
 
-    private String appId = "5"; // 飞瓜 1 酷猫 5
+    private String appId = "4"; // 飞瓜 1 酷猫 5
 
     private String device = "b46c71e9bc6dd44ee16eac6c7694aac51659983165265";
 
