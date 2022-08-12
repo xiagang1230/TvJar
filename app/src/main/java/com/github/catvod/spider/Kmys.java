@@ -465,7 +465,7 @@ public class Kmys extends Spider {
                             String k = new String(Base64.decode(jsonObject.getString("k"), Base64.DEFAULT));
                             String z = new String(Base64.decode(jsonObject.getString("z"), Base64.DEFAULT));
                             String data = decryptByPublicKey(k+z+a);
-                            signPlayerStr = new JSONObject(data).optString("key");
+                            signPlayerStr = new JSONObject(data).optString(name: "key");
                         } catch (JSONException e) {
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -535,7 +535,7 @@ public class Kmys extends Spider {
     }
 
     private static HashMap<String, String> kmysPlayerHeaders = null;
-    private static String signPlayerStr = new JSONObject(data).optString("key");
+    private static String signPlayerStr = "key";
     private static final Pattern tsRex = Pattern.compile("(\\S+.ts)|(#EXT-X-KEY:\\S+\")(\\S+)(\")");
 
     static String subUrl(String url) {
