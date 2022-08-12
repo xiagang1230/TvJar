@@ -535,7 +535,7 @@ public class Kmys extends Spider {
     }
 
     private static HashMap<String, String> kmysPlayerHeaders = null;
-    private static String signPlayerStr = "key";
+    private static String signPlayerStr = name: "";
     private static final Pattern tsRex = Pattern.compile("(\\S+.ts)|(#EXT-X-KEY:\\S+\")(\\S+)(\")");
 
     static String subUrl(String url) {
