@@ -214,6 +214,7 @@ public class Kmys extends Spider {
     public String homeVideoContent() {
         try {
             checkDomain();
+            getkey();
             String url = staticDomain + "/static/" + appId + "/index/cloumn/1.json";
             String content = OkHttpUtil.string(url, getHeaders(url));
             JSONObject jsonObject = new JSONObject(content).getJSONObject("data");
@@ -244,6 +245,7 @@ public class Kmys extends Spider {
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
         try {
             checkDomain();
+            getkey();
             JSONObject result = new JSONObject();
 
             String url = apiDomain + "/videolibrary/v2/" + appId + "/" + tid;
@@ -300,6 +302,7 @@ public class Kmys extends Spider {
     public String detailContent(List<String> ids) {
         try {
             checkDomain();
+            getkey();
             JSONObject result = new JSONObject();
             String url = staticDomain + "/static/video/detail/" + ids.get(0) + ".json";
             String content = OkHttpUtil.string(url, getHeaders(url));
